@@ -1,0 +1,102 @@
+# Blender 4.4.0 MTL File: 'None'
+# www.blender.org
+
+newmtl DarkMetal
+Ns 0.167055
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/DarkMetal_baseColor.png
+
+newmtl Light01
+Ns 8.259235
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.330466 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 1.000000 0.428909 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Light02
+Ns 1.540723
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.005908 0.017109
+Ks 0.500000 0.500000 0.500000
+Ke 1.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Material.001
+Ns 3.471155
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.125475 0.050735
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl SIgn
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/SIgn_baseColor.png
+
+newmtl Tex_CarnivalBackWall
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Tex_CarnivalBackWall_baseColor.png
+
+newmtl Tex_CarnivalCounter
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Tex_CarnivalCounter_baseColor.png
+
+newmtl Tex_CarnivalGameWoodPoles
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Tex_CarnivalGameWoodPoles_baseColor.png
+
+newmtl Tex_CarnivalGameWoodTop
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Tex_CarnivalGameWoodTop_baseColor.png
+
+newmtl Tex_CarnivalTrimDecorator
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Tex_CarnivalTrimDecorator_baseColor.png
