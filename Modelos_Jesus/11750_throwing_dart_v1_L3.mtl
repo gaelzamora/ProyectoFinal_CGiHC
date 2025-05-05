@@ -1,16 +1,18 @@
-# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 21.11.2011 12:50:29
+# Blender 4.4.0 MTL File: 'puesto.blend'
+# www.blender.org
 
 newmtl throwing_dart_body
-	Ns 50.0000
-	Ni 1.5000
-	d 1.0000
-	Tr 0.0000
-	Tf 1.0000 1.0000 1.0000 
-	illum 2
-	Ka 1.0000 1.0000 1.0000
-	Kd 1.0000 1.0000 1.0000
-	Ks 0.9000 0.9000 0.9000
-	Ke 0.0000 0.0000 0.0000
-	map_Ka throwing_dart_diffuse.jpg
-	map_Kd throwing_dart_diffuse.jpg
+Ks 0.900000 0.900000 0.900000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.776393
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+aniso 0.000000
+anisor 0.000000
+Tf 1.000000 1.000000 1.000000
+map_Kd throwing_dart_diffuse.jpg
