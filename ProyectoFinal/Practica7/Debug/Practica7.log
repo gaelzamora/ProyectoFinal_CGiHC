@@ -1,0 +1,76 @@
+﻿  Camera.cpp
+  DirectionalLight.cpp
+  Light.cpp
+C:\Users\ciber\Documents\ProyectoFinal\DirectionalLight.cpp(18,17): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\DirectionalLight.cpp(19,17): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\DirectionalLight.cpp(21,17): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\DirectionalLight.cpp(22,17): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+  main.cpp
+C:\Users\ciber\Documents\ProyectoFinal\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "main.cpp")
+  
+C:\Users\ciber\Documents\ProyectoFinal\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "main.cpp")
+  
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1340,21): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1342,39): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1461,45): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1461,40): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1466,45): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1466,40): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+  Material.cpp
+  Mesh_tn.cpp
+  Model.cpp
+C:\Users\ciber\Documents\ProyectoFinal\Model.cpp(16,10): warning C4477: 'printf' : la cadena de formato '%s' requiere un argumento de tipo 'char *', pero el argumento variádico 1 tiene el tipo 'const std::string'
+C:\Users\ciber\Documents\ProyectoFinal\Model.cpp(16,80): warning C4474: "printf": se pasaron demasiados argumentos para la cadena de formato
+      C:\Users\ciber\Documents\ProyectoFinal\Model.cpp(16,80):
+      los marcadores de posición y sus parámetros esperan 1 argumentos variádicos, pero se proporcionaron 2
+  
+C:\Users\ciber\Documents\ProyectoFinal\Model.cpp(51,7): warning C4804: '<': uso no seguro del tipo 'bool' en la operación
+C:\Users\ciber\Documents\ProyectoFinal\Model.cpp(51,21): warning C4018: '<': no coinciden signed/unsigned
+C:\Users\ciber\Documents\ProyectoFinal\Model.cpp(138,14): warning C4477: 'printf' : la cadena de formato '%s' requiere un argumento de tipo 'char *', pero el argumento variádico 1 tiene el tipo 'std::string'
+C:\Users\ciber\Documents\ProyectoFinal\Model.cpp(147,14): warning C4477: 'printf' : la cadena de formato '%s' requiere un argumento de tipo 'char *', pero el argumento variádico 1 tiene el tipo 'std::string'
+  PointLight.cpp
+C:\Users\ciber\Documents\ProyectoFinal\PointLight.cpp(28,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\PointLight.cpp(29,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\PointLight.cpp(30,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\PointLight.cpp(32,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\PointLight.cpp(33,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\PointLight.cpp(34,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\PointLight.cpp(35,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+  Shader_light.cpp
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(207,75): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(207,26): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(206,91): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(206,42): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(220,98): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(220,62): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(220,24): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(219,70): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(219,24): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(218,88): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Shader_light.cpp(218,42): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+  Skybox.cpp
+  Sphere.cpp
+C:\Users\ciber\Documents\ProyectoFinal\Sphere.cpp(39,13): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Sphere.cpp(43,16): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+  SpotLight.cpp
+  Texture.cpp
+  Window.cpp
+C:\Users\ciber\Documents\ProyectoFinal\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "Window.cpp")
+  
+C:\Users\ciber\Documents\ProyectoFinal\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "Window.cpp")
+  
+C:\Users\ciber\Documents\ProyectoFinal\Window.cpp(9,12): warning C4553: "==": el resultado de la expresión no se usa. ¿Quiso decir "="?
+C:\Users\ciber\Documents\ProyectoFinal\Window.cpp(179,22): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Window.cpp(180,22): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Window.cpp(184,28): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Window.cpp(185,40): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Window.cpp(187,21): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\Window.cpp(188,21): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+  Generando código...
+C:\Users\ciber\Documents\ProyectoFinal\Window.cpp(85,1): warning C4715: 'Window::Initialise': no todas las rutas de acceso de control devuelven un valor
+LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+  Practica7.vcxproj -> C:\Users\ciber\Documents\ProyectoFinal\Debug\Practica7.exe
