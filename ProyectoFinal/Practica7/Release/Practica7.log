@@ -1,0 +1,19 @@
+﻿  main.cpp
+C:\Users\ciber\Documents\ProyectoFinal\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "main.cpp")
+  
+C:\Users\ciber\Documents\ProyectoFinal\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "main.cpp")
+  
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1360,21): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1362,39): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1481,45): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1481,40): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1486,45): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1486,40): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+  Generando código
+  4 of 996 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    32 functions had inline decision re-evaluated but remain unchanged
+  Generación de código finalizada
+  Practica7.vcxproj -> C:\Users\ciber\Documents\ProyectoFinal\Release\Practica7.exe

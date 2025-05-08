@@ -1,0 +1,14 @@
+﻿  main.cpp
+C:\Users\ciber\Documents\ProyectoFinal\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "main.cpp")
+  
+C:\Users\ciber\Documents\ProyectoFinal\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "main.cpp")
+  
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1361,21): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1363,39): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1482,45): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1482,40): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1487,45): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1487,40): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+  Practica7.vcxproj -> C:\Users\ciber\Documents\ProyectoFinal\Debug\Practica7.exe
