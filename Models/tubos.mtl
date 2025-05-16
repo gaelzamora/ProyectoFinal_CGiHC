@@ -1,0 +1,44 @@
+# Blender 4.3.2 MTL File: 'None'
+# www.blender.org
+
+newmtl mat2
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd M_05_Circus_Carousel_02_baseColor.jpg
+map_Bump M_05_Circus_Carousel_02_normal.jpg
+
+newmtl mat3
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd M_05_Circus_Carousel_03_baseColor.jpg
+map_Bump M_05_Circus_Carousel_03_normal.jpg
+
+newmtl mat4
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl mat6
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd M_05_Circus_Carousel_01_baseColor.jpg
