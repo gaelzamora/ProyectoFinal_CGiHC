@@ -9,6 +9,8 @@ Práctica 7: Iluminación 1
 #include <cmath>
 #include <vector>
 #include <math.h>
+#include <al.h>
+#include <alc.h>
 
 #include <glew.h>
 #include <glfw3.h>
@@ -33,6 +35,9 @@ Práctica 7: Iluminación 1
 #include "SpotLight.h"
 #include "Material.h"
 
+#define DR_WAV_IMPLEMENTATION
+#include "dr_wav.h"
+
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -43,6 +48,11 @@ Texture brickTexture;
 Texture dirtTexture;
 Texture plainTexture;
 Texture pisoTexture;
+
+// Ciclo de dia y noche
+
+Model Sol_M;
+Model Luna_M;
 
 // Personajes
 
@@ -95,6 +105,7 @@ Material Material_brillante;
 Material Material_opaco;
 
 Material MaterialAvatar;
+Material MaterialAtraccion;
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
@@ -114,9 +125,23 @@ enum CameraMode {
     STATIC_CAMERA
 };
 
+ALCdevice* device = nullptr;
+ALCcontext* context = nullptr;
+ALuint bufferGlobal = 0, sourceGlobal = 0;
+ALuint bufferAttraction = 0, sourceAttraction = 0;
+ALuint bufferMedusa1 = 0, sourceMedusa1 = 0;
+ALuint bufferMedusa2 = 0, sourceMedusa2 = 0;
+
 CameraMode currentCameraMode = THIRD_PERSON;
 
 bool isGolfLightActive = true;
+
+// Variables para el ciclo de día y noche
+
+float sunMoonAngle = 0.0f; // Ángulo actual del ciclo (en radianes)
+float sunMoonSpeed = glm::radians(10.0f) / 360.0f; // Velocidad del ciclo (ajusta a tu gusto)
+glm::vec3 sunCenter = glm::vec3(0.0f, 20.0f, 0.0f); // Centro de la trayectoria
+float sunRadius = 70.0f; // Radio de la trayectoria
 
 // Índices para las luces de las atracciones en el arreglo pointLights
 const int IDX_BOLICHE = 6;
@@ -568,6 +593,8 @@ void UpdateRuedaAnimation(float deltaTime, glm::vec3& characterPosition) {
                 camera.setYaw(valueYawGames[1]); // Yaw del carrusel
                 camera.setPitch(valuePitchGames[1]); // Pitch del carrusel
                 camera.update(); // Actualizar la cámara
+				alSourceStop(sourceGlobal);
+				alSourcePlay(sourceAttraction);
                 ruedaState = 1; // Cambiar al estado "girando"
             }
             break;
@@ -602,6 +629,8 @@ void UpdateRuedaAnimation(float deltaTime, glm::vec3& characterPosition) {
 		    characterRotationY = rotationAux; // Volver a la rotación original del personaje
 		    currentCameraMode = THIRD_PERSON; // Cambiar a cámara en primera persona
             firstPress = true;
+			alSourceStop(sourceAttraction);
+			alSourcePlay(sourceGlobal);
             break;
         }
     }
@@ -626,6 +655,8 @@ void UpdateCarouselAnimation(float deltaTime, glm::vec3& characterPosition) {
                 camera.update(); // Actualizar la cámara
                 characterPosition = translateWhileAnimationIsActive[index]; // Actualizar la posición del personaje
 			    characterRotationY = rotateWhileAnimationIsActive[index]; // Actualizar la rotación del personaje
+                alSourceStop(sourceGlobal);
+                alSourcePlay(sourceAttraction);
                 carouselState = 1; // Cambiar al estado "girando"
                 carouselRotationY = 0.0f; // Reiniciar el ángulo de rotación
             break;
@@ -648,6 +679,8 @@ void UpdateCarouselAnimation(float deltaTime, glm::vec3& characterPosition) {
 		    characterRotationY = rotationAux; // Volver a la rotación original del personaje
             carouselState = 0; // Volver al estado inicial
             firstPress = true;
+            alSourceStop(sourceAttraction);
+            alSourcePlay(sourceGlobal);
             break;
         }
     }
@@ -671,6 +704,8 @@ void UpdateBowlingAnimation(float deltaTime, glm::vec3& characterPosition) {
 			    rotationAux = characterRotationY; // Guardar la rotación del personaje
 			    characterPosition = translateWhileAnimationIsActive[index]; // Actualizar la posición del personaje
 			    characterRotationY = rotateWhileAnimationIsActive[index]; // Actualizar la rotación del personaje
+				alSourceStop(sourceGlobal);
+				alSourcePlay(sourceAttraction);
 
                 bowlingState = 1; // Cambiar al estado "avanzando"
             break;
@@ -695,6 +730,8 @@ void UpdateBowlingAnimation(float deltaTime, glm::vec3& characterPosition) {
 			    characterRotationY = rotationAux; // Volver a la rotación original del personaje
                 discoLightActive[0] = false; // Desactivar la luz de discoteca del 
                 firstPress = true;
+				alSourceStop(sourceAttraction);
+				alSourcePlay(sourceGlobal);
             }
             break;
         }
@@ -724,6 +761,8 @@ void UpdateDartAndBalloonsAnimation(float deltaTime, glm::vec3& characterPositio
             dartPositionX = 0.0f; // Asegurar posición inicial
             areBalloonsVisible = true; // Asegurar que los globos sean visibles
             discoLightActive[5] = true; // Activar la luz del dardo
+			alSourceStop(sourceGlobal);
+			alSourcePlay(sourceAttraction);
             dartState = 1; // Cambiar al estado "avanzando"
             break;
 
@@ -753,6 +792,8 @@ void UpdateDartAndBalloonsAnimation(float deltaTime, glm::vec3& characterPositio
             isAnimationActive = false;
             isDartAnimating = false; // Finalizar la animación
             dartState = 0; // Volver al estado inicial
+			alSourceStop(sourceAttraction);
+			alSourcePlay(sourceGlobal);
             firstPress = true;
             break;
         }
@@ -777,6 +818,8 @@ void UpdateBaseballAnimation(float deltaTime, glm::vec3& characterPosition) {
 			    rotationAux = characterRotationY; // Guardar la rotación del personaje
 			    characterPosition = translateWhileAnimationIsActive[index]; // Actualizar la posición del personaje
 			    characterRotationY = rotateWhileAnimationIsActive[index]; // Actualizar la rotación del personaje
+				alSourceStop(sourceGlobal);
+				alSourcePlay(sourceAttraction);
                 discoLightActive[4] = true;
                 baseballState = 1; // Cambiar al estado "girando el bat"
             break;
@@ -824,6 +867,8 @@ void UpdateBaseballAnimation(float deltaTime, glm::vec3& characterPosition) {
                 isAnimatingBaseball = false; // Detener la animación
                 characterPosition = positionAux; // Volver a la posición original del personaje
                 characterRotationY = rotationAux; // Volver a la rotación original del personaje
+				alSourceStop(sourceAttraction);
+				alSourcePlay(sourceGlobal);
             }
             isAnimationActive = false; // Desactivar la bandera de animación
             currentCameraMode = THIRD_PERSON; // Cambiar a cámara en primera persona
@@ -888,6 +933,9 @@ void UpdateTopo1Animation(float deltaTime, glm::vec3& characterPosition) {
 			    characterPosition = translateWhileAnimationIsActive[index]; // Actualizar la posición del personaje
 			    characterRotationY = rotateWhileAnimationIsActive[index]; // Actualizar la rotación del personaje
                 isAnimationActive = true;
+				discoLightActive[3] = true; // Activar la luz de discoteca del topo
+				alSourceStop(sourceGlobal);
+				alSourcePlay(sourceAttraction);
 
                 topo1State = 1; // Cambiar al Estado 2
             break;
@@ -931,6 +979,8 @@ void UpdateTopo1Animation(float deltaTime, glm::vec3& characterPosition) {
                 isAnimatingTopo = false; // Detener la animación
 				isAnimationActive = false; // Desactivar la bandera de animación
                 firstPress = true;
+				alSourceStop(sourceAttraction);
+				alSourcePlay(sourceGlobal);
 
 
             discoLightActive[3] = false;
@@ -1172,6 +1222,8 @@ void UpdateAxeAnimation(float deltaTimem, glm::vec3& characterPosition) {
             axePositionX = 0.0f; // Asegurar posición inicial
             axeRotationX = 0.0f; // Reiniciar rotación
             axeState = 1; // Cambiar al estado 1
+			alSourceStop(sourceGlobal);
+			alSourcePlay(sourceAttraction);
             break;
 
         case 1: // Traslación y rotación
@@ -1195,6 +1247,8 @@ void UpdateAxeAnimation(float deltaTimem, glm::vec3& characterPosition) {
 				characterRotationY = rotationAux; // Volver a la rotación original del personaje
                 axeState = 0; // Reiniciar el estado
                 firstPress = true;
+				alSourceStop(sourceAttraction);
+				alSourcePlay(sourceGlobal);
             }
             break;
         }
@@ -1222,6 +1276,90 @@ void UpdateGolfAnimation(float deltaTime) {
 
 int main()
 {
+
+    // Inicializar OpenAL
+    device = alcOpenDevice(nullptr);
+    if (!device) { printf("No se pudo abrir el dispositivo de audio\n"); return -1; }
+    context = alcCreateContext(device, nullptr);
+    alcMakeContextCurrent(context);
+
+    // --- Música global ---
+    drwav wavGlobal;
+    if (!drwav_init_file(&wavGlobal, "music/Feria.wav", nullptr)) {
+        printf("No se pudo cargar el archivo de audio global\n");
+        return -1;
+    }
+    size_t dataSizeGlobal = wavGlobal.totalPCMFrameCount * wavGlobal.channels * sizeof(int16_t);
+    int16_t* pcmDataGlobal = (int16_t*)malloc(dataSizeGlobal);
+    drwav_read_pcm_frames_s16(&wavGlobal, wavGlobal.totalPCMFrameCount, pcmDataGlobal);
+
+    alGenBuffers(1, &bufferGlobal);
+    alBufferData(bufferGlobal, (wavGlobal.channels == 2) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pcmDataGlobal, (ALsizei)dataSizeGlobal, wavGlobal.sampleRate);
+    alGenSources(1, &sourceGlobal);
+    alSourcei(sourceGlobal, AL_BUFFER, bufferGlobal);
+    alSourcei(sourceGlobal, AL_LOOPING, AL_TRUE);
+    alSourcef(sourceGlobal, AL_GAIN, 0.7f);
+    alSourcePlay(sourceGlobal);
+
+    drwav_uninit(&wavGlobal);
+    free(pcmDataGlobal);
+
+    // --- Música de atracción ---
+    drwav wavAttraction;
+    if (!drwav_init_file(&wavAttraction, "music/Atraccion.wav", nullptr)) {
+        printf("No se pudo cargar el archivo de audio de la atracción\n");
+        return -1;
+    }
+    size_t dataSizeAttraction = wavAttraction.totalPCMFrameCount * wavAttraction.channels * sizeof(int16_t);
+    int16_t* pcmDataAttraction = (int16_t*)malloc(dataSizeAttraction);
+    drwav_read_pcm_frames_s16(&wavAttraction, wavAttraction.totalPCMFrameCount, pcmDataAttraction);
+
+    alGenBuffers(1, &bufferAttraction);
+    alBufferData(bufferAttraction, (wavAttraction.channels == 2) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pcmDataAttraction, (ALsizei)dataSizeAttraction, wavAttraction.sampleRate);
+    alGenSources(1, &sourceAttraction);
+    alSourcei(sourceAttraction, AL_BUFFER, bufferAttraction);
+    alSourcei(sourceAttraction, AL_LOOPING, AL_TRUE);
+    alSourcef(sourceAttraction, AL_GAIN, 0.1f);
+
+    drwav_uninit(&wavAttraction);
+    free(pcmDataAttraction);
+
+    // --- Sonido de la medusa ---
+
+    drwav wavMedusa;
+    if (!drwav_init_file(&wavMedusa, "music/Medusa.wav", nullptr)) {
+        printf("No se pudo cargar el archivo de audio de la medusa\n");
+        return -1;
+    }
+    size_t dataSizeMedusa = wavMedusa.totalPCMFrameCount * wavMedusa.channels * sizeof(int16_t);
+    int16_t* pcmDataMedusa = (int16_t*)malloc(dataSizeMedusa);
+    drwav_read_pcm_frames_s16(&wavMedusa, wavMedusa.totalPCMFrameCount, pcmDataMedusa);
+
+    // Puedes usar el mismo buffer para ambas fuentes
+    alGenBuffers(1, &bufferMedusa1);
+    alBufferData(bufferMedusa1, (wavMedusa.channels == 2) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pcmDataMedusa, (ALsizei)dataSizeMedusa, wavMedusa.sampleRate);
+
+    // Fuente para la medusa 1
+    alGenSources(1, &sourceMedusa1);
+    alSourcei(sourceMedusa1, AL_BUFFER, bufferMedusa1);
+    alSourcei(sourceMedusa1, AL_LOOPING, AL_TRUE);
+    alSourcef(sourceMedusa1, AL_GAIN, 0.5f);
+    alSourcef(sourceMedusa1, AL_REFERENCE_DISTANCE, 3.0f);
+    alSourcef(sourceMedusa1, AL_MAX_DISTANCE, 6.0f);
+    alSourcef(sourceMedusa1, AL_ROLLOFF_FACTOR, 1.0f);
+
+    // Fuente para la medusa 2
+    alGenSources(1, &sourceMedusa2);
+    alSourcei(sourceMedusa2, AL_BUFFER, bufferMedusa1); // Usa el mismo buffer
+    alSourcei(sourceMedusa2, AL_LOOPING, AL_TRUE);
+    alSourcef(sourceMedusa2, AL_GAIN, 0.5f);
+    alSourcef(sourceMedusa2, AL_REFERENCE_DISTANCE, 3.0f);
+    alSourcef(sourceMedusa2, AL_MAX_DISTANCE, 6.0f);
+    alSourcef(sourceMedusa2, AL_ROLLOFF_FACTOR, 1.0f);
+
+    drwav_uninit(&wavMedusa);
+    free(pcmDataMedusa);
+
     mainWindow = Window(1280, 1024); // 1280, 1024 or 1024, 768
     mainWindow.Initialise();
 
@@ -1238,6 +1376,14 @@ int main()
     plainTexture.LoadTextureA();
     pisoTexture = Texture("Textures/cesped.jpg");
     pisoTexture.LoadTextureA();
+
+    // Ciclo de dia y noche
+
+    Sol_M = Model();
+    Sol_M.LoadModel("Models/Sun.obj");
+
+	Luna_M = Model();
+	Luna_M.LoadModel("Models/Moon.obj");
 
     // Personajes
 
@@ -1367,6 +1513,7 @@ int main()
     Material_opaco = Material(0.3f, 4);
 
     MaterialAvatar = Material(3.0f, 128);
+    MaterialAtraccion = Material(1.5f, 64);
 
     // luz direccional, sólo 1 y siempre debe de existir
     mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
@@ -1505,6 +1652,46 @@ int main()
         angleCaballo1 += deltaTime;
         angleCaballo2 += deltaTime;
         angulovaria += deltaTime;
+
+        // Actualizar ángulo del sol y la luna
+        sunMoonAngle += sunMoonSpeed * deltaTime;
+        if (sunMoonAngle > glm::two_pi<float>()) sunMoonAngle -= glm::two_pi<float>();
+
+        // Calcular posición del sol (de este a oeste)
+        glm::vec3 sunPos = sunCenter + glm::vec3(
+            sunRadius * cos(sunMoonAngle),
+            sunRadius * sin(sunMoonAngle),
+            0.0f
+        );
+
+        // Calcular posición de la luna (opuesta al sol)
+        glm::vec3 moonPos = sunCenter + glm::vec3(
+            sunRadius * cos(sunMoonAngle + glm::pi<float>()),
+            sunRadius * sin(sunMoonAngle + glm::pi<float>()),
+            0.0f
+        );
+
+        // Cambiar skybox según la altura del sol
+        static bool lastDay = true;
+        bool nowDay = sunPos.y > 0.0f;
+        if (nowDay != lastDay) {
+            if (nowDay) {
+                skybox = Skybox(dayFaces);
+            }
+            else {
+                skybox = Skybox(nightFaces);
+            }
+            lastDay = nowDay;
+        }
+
+        // Actualizar dirección de la luz direccional para que apunte desde el sol hacia el centro de la escena
+        glm::vec3 lightDir = glm::normalize(-sunPos);
+        mainLight.SetDirection(lightDir.x, lightDir.y, lightDir.z);
+
+        // Opcional: Cambia la intensidad según la altura del sol
+        float sunHeight = sunPos.y;
+        float intensity = glm::clamp((sunHeight + sunRadius) / (2.0f * sunRadius), 0.1f, 1.0f);
+        mainLight.SetIntensity(0.1f * intensity, 0.6f * intensity);
 
 
         if (isAnimationActive) {
@@ -1828,27 +2015,49 @@ int main()
         // Configurar las luces en el shader
         shaderList[0].SetPointLights(pointLights, totalLights);
 
+        /*---------------------Ciclo de dia y noche (Modelos)-------------------------*/
+
+        // Renderizar el sol
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, sunPos);
+        model = glm::scale(model, glm::vec3(2.0f)); // Tamaño del sol
+        Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        Sol_M.RenderModel();
+
+        // Renderizar la luna
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, moonPos);
+        model = glm::scale(model, glm::vec3(1.5f)); // Tamaño de la luna
+        Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        Luna_M.RenderModel();
+
         /*---------------------Rueda de la fortuna-------------------------*/
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(30.0f, 6.0f, 10.0f)); // Posición de la rueda
         model = glm::rotate(model, glm::radians(ruedaRotationX), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotación en el eje X
+		MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         RuedaFortuna_M.RenderModel();
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(30.0f, 6.0f, 10.0f)); // Posición de los asientos
         model = glm::rotate(model, glm::radians(asientosRotationX), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotación en el eje X
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         AsentosRueda_M.RenderModel();
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(30.0f, 6.0f, 10.0));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         BaseRueda_M.RenderModel();
 
         model = glm::translate(model, glm::vec3(-5.0f, -5.7f + sin(glm::radians(angulovaria)), 0.0f));
         Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Coin_M.RenderModel();
 
@@ -1856,6 +2065,35 @@ int main()
 
         pointLights[4].setPosition(17.0f, 0.1f + sin(glm::radians(angulovaria)), 9.5f + medusaPositionZ);
         pointLights[5].setPosition(-12.0f, 0.1f + sin(glm::radians(angulovaria)), -2.5f + medusaPositionZ);
+
+        // Medusa 1
+        glm::vec3 medusa1Pos(17.0f, 0.1f + sin(glm::radians(angulovaria)), 11.0f + medusaPositionZ);
+        alSource3f(sourceMedusa1, AL_POSITION, medusa1Pos.x, medusa1Pos.y, medusa1Pos.z);
+        float distanciaMedusa1 = glm::distance(characterPosition, medusa1Pos);
+        if (distanciaMedusa1 < 6.0f) {
+            ALint state;
+            alGetSourcei(sourceMedusa1, AL_SOURCE_STATE, &state);
+            if (state != AL_PLAYING) alSourcePlay(sourceMedusa1);
+        }
+        else {
+            alSourceStop(sourceMedusa1);
+        }
+
+        // Medusa 2
+        glm::vec3 medusa2Pos(-12.0f, 0.1f + sin(glm::radians(angulovaria)), -1.5f + medusaPositionZ);
+        alSource3f(sourceMedusa2, AL_POSITION, medusa2Pos.x, medusa2Pos.y, medusa2Pos.z);
+        float distanciaMedusa2 = glm::distance(characterPosition, medusa2Pos);
+        if (distanciaMedusa2 < 6.0f) {
+            ALint state;
+            alGetSourcei(sourceMedusa2, AL_SOURCE_STATE, &state);
+            if (state != AL_PLAYING) alSourcePlay(sourceMedusa2);
+        }
+        else {
+            alSourceStop(sourceMedusa2);
+        }
+
+        // Posición del personaje (listener)
+        alListener3f(AL_POSITION, characterPosition.x, characterPosition.y, characterPosition.z);
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(17.0f, 0.1f + sin(glm::radians(angulovaria)), 11.0f + medusaPositionZ));
@@ -1920,18 +2158,20 @@ int main()
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(-13.0f, -0.5f, 7.0));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         LanzamientoHacha_M.RenderModel();
 
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-9.5f + axePositionX, 0.5f, 6.8f)); // Posición inicial más el desplazamiento en X
         model = glm::rotate(model, glm::radians(axeRotationX), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotación en el eje X
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Hacha_M.RenderModel();
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(-9.0f, 1.5f + sin(glm::radians(angulovaria)), 7.0f));
-        Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Coin_M.RenderModel();
 
@@ -1940,53 +2180,53 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(12.0f, -0.5f, 15.0));
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-        Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         PuestoGlobos_M.RenderModel();
 
         if (isDartAnimating) {
             model = glm::mat4(1.0);
             model = glm::translate(model, glm::vec3(12.0f + dartPositionX, -0.5f, 15.0));
+            MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
             glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-            Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
             DardoGlobos_M.RenderModel();
 
             model = glm::mat4(1.0);
             model = glm::translate(model, glm::vec3(12.0f + dartPositionX, -0.5f, 15.6));
+            MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
             glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-            Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
             DardoGlobos_M.RenderModel();
 
             model = glm::mat4(1.0);
             model = glm::translate(model, glm::vec3(12.0f + dartPositionX, -0.5f, 14.4));
+            MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
             glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-            Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
             DardoGlobos_M.RenderModel();
         }
 
         if (areBalloonsVisible) {
             model = glm::mat4(1.0);
             model = glm::translate(model, glm::vec3(12.0f, -0.5f, 15.0f));
+            MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
             glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-            Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
             Globo_M.RenderModel();
 
             model = glm::mat4(1.0);
             model = glm::translate(model, glm::vec3(12.0f, -0.5f, 14.3f));
+            MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
             glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-            Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
             Globo_M.RenderModel();
 
             model = glm::mat4(1.0);
             model = glm::translate(model, glm::vec3(12.0f, -0.5f, 15.7f));
+            MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
             glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-            Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
             Globo_M.RenderModel();
 
         }
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(15.0f, 1.5f + sin(glm::radians(angulovaria)), 15.0f));
-        Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Coin_M.RenderModel();
 
@@ -2020,6 +2260,7 @@ int main()
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(0.0f, -0.6f, 15.0f));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         GolpeaTopo_M.RenderModel();
 
@@ -2028,6 +2269,7 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(0.03f, topo1PositionY, 15.18));
         model = glm::rotate(model, glm::radians(topo1RotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         TopoToy_M.RenderModel();
 
@@ -2035,29 +2277,33 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(0.03f, 0.1 + topo2PositionY, 15.0));
         model = glm::rotate(model, glm::radians(topo2RotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         TopoToy_M.RenderModel();
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(0.03f, topo1PositionY, 14.83));
         model = glm::rotate(model, glm::radians(topo1RotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         TopoToy_M.RenderModel();
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(-0.14f, topo2PositionY, 14.9));
         model = glm::rotate(model, glm::radians(topo2RotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         TopoToy_M.RenderModel();
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(-0.14f, topo2PositionY, 15.13));
         model = glm::rotate(model, glm::radians(topo2RotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         TopoToy_M.RenderModel();
 
         model = glm::translate(model, glm::vec3(-0.1f, 1.5f + sin(glm::radians(angulovaria)), 0.0f));
-        Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Coin_M.RenderModel();
 
@@ -2067,13 +2313,14 @@ int main()
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(12.0f, -1.0f, -5.0f));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Carousel_M.RenderModel();
 
         // Moneda de interaccion
 
         model = glm::translate(model, glm::vec3(-0.0f, 2.0f + sin(glm::radians(angulovaria)), 5.0f));
-        Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Coin_M.RenderModel();
 
@@ -2081,6 +2328,7 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(12.0f, -1.0f, -5.0f));
         model = glm::rotate(model, glm::radians(carouselRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Tubos_M.RenderModel();
 
@@ -2088,6 +2336,7 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(12.0f, changeValueVCarousel(-0.8f + 0.1f * sin(glm::radians(angleCaballo1))), -5.0f));
         model = glm::rotate(model, glm::radians(carouselRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Caballo_M.RenderModel();
 
@@ -2095,6 +2344,7 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(12.0f, changeValueVCarousel(-0.8f + 0.2f * sin(glm::radians(angleCaballo1))), -5.0f));
         model = glm::rotate(model, glm::radians(45.0f+carouselRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Caballo_M.RenderModel();
 
@@ -2102,23 +2352,26 @@ int main()
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(0.0f, 1.5f, -5.0f));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Cancha_M.RenderModel();
 
         model = glm::translate(model, glm::vec3(-2.3f, -1.2f + sin(glm::radians(angulovaria)), 0.0f));
-        Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Coin_M.RenderModel();
 
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(-2.0f + baseballPositionX, 0.0f + 0.1f * sin(glm::radians(angleBaseball)), -4.0f));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Baseball_M.RenderModel();
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(-2.2f, -0.6f, -5.0f)); // Posición del bat
         model = glm::rotate(model, glm::radians(batRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Bat_M.RenderModel();
 
@@ -2128,6 +2381,7 @@ int main()
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(0.0f, -1.0f, -15.0f)); // Posición del bat
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         LineBowling_M.RenderModel();
 
@@ -2135,13 +2389,14 @@ int main()
 
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(bowlingPositionX, -0.85f, -15.0f)); 
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Bowling_M.RenderModel();
 
         		// Moneda de interaccion
 		model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(-4.7f, 0.3f + sin(glm::radians(angulovaria)), -15.0f));
-        Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Coin_M.RenderModel();
 
@@ -2151,6 +2406,7 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(0.0f, -0.9f, -14.9f)); // Posición del pino
         model = glm::rotate(model, glm::radians(pinsRotationX), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotación en el eje X
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Pine_M.RenderModel();
 
@@ -2158,6 +2414,7 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(0.0f, -0.9f, -15.0f)); // Posición del pino
         model = glm::rotate(model, glm::radians(pinsRotationX), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotación en el eje X
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Pine_M.RenderModel();
 
@@ -2165,6 +2422,7 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(0.0f, -0.9f, -15.1f)); // Posición del pino
         model = glm::rotate(model, glm::radians(pinsRotationX), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotación en el eje X
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Pine_M.RenderModel();
 
@@ -2172,6 +2430,7 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(-0.1f, -0.9f, -14.95f)); // Posición del pino
         model = glm::rotate(model, glm::radians(pinsRotationX), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotación en el eje X
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Pine_M.RenderModel();
 
@@ -2179,6 +2438,7 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(-0.1f, -0.9f, -15.05f)); // Posición del pino
         model = glm::rotate(model, glm::radians(pinsRotationX), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotación en el eje X
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Pine_M.RenderModel();
 
@@ -2186,6 +2446,22 @@ int main()
 
         mainWindow.swapBuffers();
     }
+
+    alSourceStop(sourceGlobal);
+    alDeleteSources(1, &sourceGlobal);
+    alDeleteBuffers(1, &bufferGlobal);
+
+    alSourceStop(sourceAttraction);
+    alDeleteSources(1, &sourceAttraction);
+    alDeleteBuffers(1, &bufferAttraction);
+
+    alSourceStop(sourceMedusa1);
+    alDeleteSources(1, &sourceMedusa1);
+    alDeleteBuffers(1, &bufferMedusa1);
+
+    alSourceStop(sourceMedusa2);
+    alDeleteSources(1, &sourceMedusa2);
+    alDeleteBuffers(1, &bufferMedusa2);
 
     return 0;
 }
