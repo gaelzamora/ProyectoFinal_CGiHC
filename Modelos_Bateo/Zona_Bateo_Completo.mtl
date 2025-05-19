@@ -1,20 +1,5 @@
-# Blender 4.4.0 MTL File: 'Zona_Bateo.blend'
+# Blender 4.4.0 MTL File: 'Bateo2.blend'
 # www.blender.org
-
-newmtl Adobe_Express_-_file
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-illum 2
-Pr 0.500000
-Pm 0.000000
-Ps 0.000000
-Pc 0.000000
-Pcr 0.030000
-aniso 0.000000
-anisor 0.000000
-map_Kd Adobe Express - file.png
-map_d Adobe Express - file.png
 
 newmtl Bolas_Baseball.001
 Ks 0.000000 0.000000 0.000000
@@ -47,7 +32,7 @@ aniso 0.000000
 anisor 0.000000
 map_Kd Bake_Worker2.png
 
-newmtl DS_Jon_Texture.001
+newmtl DS_Jon_Texture
 Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -62,67 +47,7 @@ aniso 0.000000
 anisor 0.000000
 map_Kd DS_Jon_Texture.png
 
-newmtl Goal.003
-Ks 1.000000 1.000000 1.000000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 3
-Pr 0.500000
-Pm 1.000000
-Ps 0.000000
-Pc 0.000000
-Pcr 0.030000
-aniso 0.000000
-anisor 0.000000
-map_Kd MarcoRed3.png
-
-newmtl Goal.004
-Ks 1.000000 1.000000 1.000000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 3
-Pr 0.500000
-Pm 1.000000
-Ps 0.000000
-Pc 0.000000
-Pcr 0.030000
-aniso 0.000000
-anisor 0.000000
-map_Kd MarcoRed.png
-
-newmtl Goal.005
-Ks 1.000000 1.000000 1.000000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 3
-Pr 0.500000
-Pm 1.000000
-Ps 0.000000
-Pc 0.000000
-Pcr 0.030000
-aniso 0.000000
-anisor 0.000000
-map_Kd MarcoRed2.png
-
-newmtl Mat.001
-Ks 1.000000 1.000000 1.000000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-Pr 1.000000
-Pm 0.000000
-Ps 0.000000
-Pc 0.000000
-Pcr 0.030000
-aniso 0.000000
-anisor 0.000000
-map_Kd letrero2.png
-
-newmtl Material.007
+newmtl Material.001
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -137,7 +62,7 @@ aniso 0.000000
 anisor 0.000000
 map_Kd T_Metal_08_D.png
 
-newmtl Material.008
+newmtl Material.002
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -152,7 +77,7 @@ aniso 0.000000
 anisor 0.000000
 map_Kd T_Metal_06.png
 
-newmtl Material.009
+newmtl Material.003
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -167,7 +92,7 @@ aniso 0.000000
 anisor 0.000000
 map_Kd T_Metal_06.png
 
-newmtl Material.010
+newmtl Material.004
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -182,7 +107,7 @@ aniso 0.000000
 anisor 0.000000
 map_Kd T_Metal_06.png
 
-newmtl Material.011
+newmtl Material.005
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -197,7 +122,7 @@ aniso 0.000000
 anisor 0.000000
 map_Kd T_Metal_09_D.png
 
-newmtl Material.012
+newmtl Material.006
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -212,7 +137,7 @@ aniso 0.000000
 anisor 0.000000
 map_Kd T_Neighbor_Clothes_MRS.png
 
-newmtl Material.013
+newmtl Material.008
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -227,7 +152,52 @@ aniso 0.000000
 anisor 0.000000
 map_Kd T_Neighbor_Hair_SRT.png
 
-newmtl Material__26.001
+newmtl Material.018
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+aniso 0.000000
+anisor 0.000000
+map_Kd Jaula1.png
+
+newmtl Material.019
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+aniso 0.000000
+anisor 0.000000
+map_Kd Jaula2.png
+
+newmtl Material.020
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+aniso 0.000000
+anisor 0.000000
+map_Kd Jaula3.png
+
+newmtl Material__26
 Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
@@ -243,52 +213,7 @@ anisor 0.000000
 Tf 1.000000 1.000000 1.000000
 map_Kd grass.jpg
 
-newmtl Net.003
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-Pr 0.500000
-Pm 0.000000
-Ps 0.000000
-Pc 0.000000
-Pcr 0.030000
-aniso 0.000000
-anisor 0.000000
-map_Kd Bake_Jaula1.png
-
-newmtl Net.004
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-Pr 0.500000
-Pm 0.000000
-Ps 0.000000
-Pc 0.000000
-Pcr 0.030000
-aniso 0.000000
-anisor 0.000000
-map_Kd Bake_Jaula1.png
-
-newmtl Net.005
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-Pr 0.500000
-Pm 0.000000
-Ps 0.000000
-Pc 0.000000
-Pcr 0.030000
-aniso 0.000000
-anisor 0.000000
-map_Kd Bake_Jaula1.png
-
-newmtl helmet_exterior.001
+newmtl helmet_exterior
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
@@ -303,7 +228,7 @@ anisor 0.000000
 map_Kd helmet_helmet exterior_BaseColor.png
 map_Pr helmet_helmet exterior_Roughness.png
 
-newmtl set1.001
+newmtl set1
 Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
