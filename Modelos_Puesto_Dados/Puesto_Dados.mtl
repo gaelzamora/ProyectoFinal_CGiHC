@@ -1,4 +1,4 @@
-# Blender 4.4.0 MTL File: 'Mesa_Dados.blend'
+# Blender 4.4.0 MTL File: 'Sign_board.blend'
 # www.blender.org
 
 newmtl 00_erged
@@ -76,20 +76,20 @@ aniso 0.000000
 anisor 0.000000
 map_Kd pokertable_round_Leather_BaseColor.png
 
-newmtl Material.001
-Ks 0.050000 0.050000 0.050000
+newmtl Material
+Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
+d 1.000000
 illum 2
-Pr 0.868182
+Pr 0.500000
 Pm 0.000000
 Ps 0.000000
 Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd EXTRAHUEVOORDINAROOOOOOOO.png
-map_d EXTRAHUEVOORDINAROOOOOOOO.png
+map_Kd cara batman.png
 
 newmtl Material.002
 Ks 0.500000 0.500000 0.500000
@@ -105,6 +105,21 @@ Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
 map_Kd Guante.png
+
+newmtl Material.003
+Ks 0.050000 0.050000 0.050000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+Pr 0.868182
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+aniso 0.000000
+anisor 0.000000
+map_Kd EXTRAHUEVOORDINAROOOOOOOO.png
+map_d EXTRAHUEVOORDINAROOOOOOOO.png
 
 newmtl Metal
 Ks 0.500000 0.500000 0.500000
