@@ -68,6 +68,10 @@ Model Coin_M;
 Model Medusa_M;
 Model Lampara_M;
 Model Golf_M;
+Model Garfield_M;
+Model Batman_M;
+Model Patrick_M;
+Model CasaCalamardo_M;
 
 // Atracciones
 Model BaseRueda_M;
@@ -91,6 +95,8 @@ Model DardoGlobos_M;
 Model Globo_M;
 Model LanzamientoHacha_M;
 Model Hacha_M;
+Model PuestoDados_M;
+Model Dado_M;
 
 // Puestos de servicio
 Model HotDogs_M;
@@ -117,6 +123,51 @@ DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
+// Estructura para la animacion de salto a cualquier personaje por keyframes
+
+struct JumpKeyframe {
+    float time;   // Tiempo relativo (0.0 a 1.0)
+    float height; // Altura en ese keyframe
+};
+
+struct JumpAnimation {
+    std::vector<JumpKeyframe> keyframes;
+    float duration; // Duración total del ciclo de salto (en segundos)
+    float timer;    // Acumulador de tiempo
+
+    JumpAnimation(float dur)
+        : duration(dur), timer(0.0f) {
+        // Keyframes para un salto simple (puedes ajustar los valores)
+        keyframes.push_back({ 0.0f, 0.0f });   // Inicio en el suelo
+        keyframes.push_back({ 0.3f, 1.0f });   // Pico del salto
+        keyframes.push_back({ 0.7f, 0.0f });   // Regresa al suelo
+        keyframes.push_back({ 1.0f, 0.0f });   // Fin del ciclo
+    }
+
+    // Calcula la altura interpolada según el tiempo actual
+    float getHeight(float deltaTime) {
+        timer += deltaTime;
+        if (timer > duration) timer -= duration; // Loop infinito
+
+        float t = timer / duration;
+
+        // Busca los dos keyframes entre los que estamos
+        for (size_t i = 1; i < keyframes.size(); ++i) {
+            if (t <= keyframes[i].time) {
+                const JumpKeyframe& prev = keyframes[i - 1];
+                const JumpKeyframe& next = keyframes[i];
+                float localT = (t - prev.time) / (next.time - prev.time);
+                return glm::mix(prev.height, next.height, localT);
+            }
+        }
+        return 0.0f;
+    }
+};
+
+// Saltos independientes para cada personaje
+
+JumpAnimation garfieldJumAnim(60.0f);
+JumpAnimation batmanJumAnim(60.0f);
 
 enum CameraMode {
     FIRST_PERSON,
@@ -151,11 +202,12 @@ const int IDX_TOPO = 9;
 const int IDX_BEISBOL = 10;
 const int IDX_DARDO = 11;
 const int IDX_AXE = 12;
+const int IDX_DADOS = 13;
 
 float dayNightTimer = 0.0f; // Temporizador para alternar entre día y noche
 
 // Estados y temporizadores para las luces de discoteca
-bool discoLightActive[8] = { false, false, false, false, false, false, false, true };
+bool discoLightActive[8] = { false, false, false, false, false, false, false, false };
 float discoLightTimer[8] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 int discoLightColorIndex[8] = { 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -169,7 +221,7 @@ glm::vec3 discoColors[3] = {
     glm::vec3(0.0f, 1.0f, 0.0f)  // Verde
 };
 
-glm::vec3 positionsGames[7] = {
+glm::vec3 positionsGames[8] = {
     glm::vec3(12.0f, 0.0f, -0.6f), // Carousel
     glm::vec3(19.5f, 1.0f, 9.7f), // Rueda de la fortuna
     glm::vec3(-2.0f, 2.0f, 13.5f), // Topo
@@ -177,19 +229,21 @@ glm::vec3 positionsGames[7] = {
     glm::vec3(-7.0f, 3.0f, -15.0f), // Linea de boliche
     glm::vec3(17.0f, 0.0f, 15.0f), // Lanzamiento de dardo
     glm::vec3(-7.0f, 3.0f, 7.0f), // Lanzamiento de hacha
+    glm::vec3(12.5f, 0.5f, -15.5f), // Lanzamiento de dados
 };
 
-float valueYawGames[7] = {
+float valueYawGames[8] = {
     {-90.0f},
     {0.0f},
     {45.0f},
     {0.0f},
     {0.0f},
     {-180.0},
-    {-180.0}
+    {-180.0},
+    {-190.0f},
 };
 
-float valuePitchGames[7] = {
+float valuePitchGames[8] = {
     {0.0f},
     {15.0f},
     {-30.0f},
@@ -197,9 +251,10 @@ float valuePitchGames[7] = {
     {-45.0f},
     {0.0f},
     {-30.0f},
+	{-10.0f},
 };
 
-glm::vec3 translateWhileAnimationIsActive[7]{
+glm::vec3 translateWhileAnimationIsActive[8]{
     glm::vec3(11.5f, -0.1f, -2.2),
     glm::vec3(27.5f, -0.1f, 9.7f),
     glm::vec3(-0.6f, -0.5f, 15.0f),
@@ -207,9 +262,10 @@ glm::vec3 translateWhileAnimationIsActive[7]{
     glm::vec3(-4.6f, -0.1f, -15.0f),
     glm::vec3(13.5f, -0.1f, 15.5f),
     glm::vec3(-9.0f, -0.1f, 7.2f),
+    glm::vec3(12.0f, -0.1f, -15.2f),
 };
 
-float rotateWhileAnimationIsActive[7]{
+float rotateWhileAnimationIsActive[8]{
     {90.0f},
     {0.0f},
     {0.0f},
@@ -217,7 +273,33 @@ float rotateWhileAnimationIsActive[7]{
     {0.0f},
     {180.0f},
     {180.0f},
+    {180.0f},
 };
+
+// Luz disco tipo SpotLight sobre el carrito de golf
+bool discoSpotlightActive = true;
+float discoSpotlightTimer = 0.0f;
+int discoSpotlightColorIndex = 0;
+glm::vec3 discoSpotlightColors[3] = {
+    glm::vec3(1.0f, 0.0f, 0.0f), // Rojo
+    glm::vec3(0.0f, 1.0f, 0.0f), // Verde
+    glm::vec3(0.0f, 0.0f, 1.0f)  // Azul
+};
+
+// Animación de los dados (Puesto de Dados)
+bool isAnimatingDados = false;
+float dadoAnimTime = 0.0f;
+float dadoAnimDuration = 180.0f; // Duración de la caída/subida
+float dadoRotDuration = 90.0f;  // Duración de la rotación
+bool dadosRegresando = false;
+
+// Estados de los dados
+float dado1PosY = 0.5f;
+float dado2PosY = 0.5f;
+float dado1RotY = 0.0f;
+float dado2RotY = 0.0f;
+
+// Animacion para carrito de golf
 
 bool isGolfAnimating = true; // Indica si la animación está activa
 float golfAngle = 0.0f;       // Ángulo actual del carrito en el círculo (en radianes)
@@ -412,7 +494,7 @@ void UpdateMedusaAnimation(float deltaTime) {
 }
 
 void UpdateJumpAnimation(float deltaTime) {
-    if (isAnimatingBowling || isAnimatingRueda || isAnimatingCarousel || isDartAnimating || isAxeAnimating) { // Solo realizar el salto si hay una animación activa
+    if (isAnimatingBowling || isAnimatingRueda || isAnimatingCarousel || isDartAnimating || isAxeAnimating || isAnimatingDados) { // Solo realizar el salto si hay una animación activa
         if (isJumpingUp) {
             // Subir al personaje
             characterVerticalPosition += jumpSpeed * deltaTime;
@@ -549,7 +631,7 @@ void updateCameraAndCharacter(Camera& camera, glm::vec3& characterPosition, bool
                     discoLightActive[index] = false;
 
                     // Incrementar el índice y reiniciar a 0 si llega al final
-                    index = (index + 1) % 7;
+                    index = (index + 1) % 8;
                 }
                 else {
                     firstPress = false; // Desactivar el control de primera pulsación
@@ -1052,7 +1134,7 @@ void UpdateTopo2Animation(float deltaTime) {
 void UpdateDiscoAttractionLights(float deltaTime) {
     float colorChangeInterval = 15.0f; // Cambia de color cada 1 segundo
 
-    for (int i = 0; i < 7; ++i) {
+    for (int i = 0; i < 8; ++i) {
         if (discoLightActive[i]) {
             discoLightTimer[i] += deltaTime;
             if (discoLightTimer[i] >= colorChangeInterval) {
@@ -1180,7 +1262,7 @@ bool IsNear(glm::vec3 position1, glm::vec3 position2, float threshold) {
 }
 
 void UpdateHandAnimation(float deltaTime) {
-    if (isAnimatingBowling ||  isAnimatingBaseball || isAnimatingTopo) { // Solo animar si la animación está activa
+    if (isAnimatingBowling ||  isAnimatingBaseball || isAnimatingTopo || isAnimatingDados) { // Solo animar si la animación está activa
         handAnimationTime += deltaTime;
 
         // Calcular el progreso de la animación (0.0 a 1.0)
@@ -1274,6 +1356,61 @@ void UpdateGolfAnimation(float deltaTime) {
     }
 }
 
+void UpdateDadosAnimation(float deltaTime, glm::vec3& characterPosition) {
+    if (!isAnimatingDados) {
+        discoLightActive[7] = false;
+        return;
+    }
+    if (!dadosRegresando) {
+        // Fase 1: Caída
+        dadoAnimTime += deltaTime;
+        float t = glm::clamp(dadoAnimTime / dadoAnimDuration, 0.0f, 1.0f);
+        dado1PosY = glm::mix(0.5f, -0.23f, t);
+        dado2PosY = glm::mix(0.5f, -0.23f, t);
+        dado1RotY = 0.0f;
+        dado2RotY = 0.0f;
+		
+        if (t >= 1.0f) {
+            // Fase 2: Rotación
+            float tRot = glm::clamp((dadoAnimTime - dadoAnimDuration) / dadoRotDuration, 0.0f, 1.0f);
+            dado1RotY = glm::mix(0.0f, 90.0f, tRot);
+            dado2RotY = glm::mix(0.0f, 180.0f, tRot);
+
+            if (tRot >= 1.0f) {
+                // Iniciar regreso
+                dadosRegresando = true;
+                dadoAnimTime = 0.0f;
+            }
+        }
+    }
+    else {
+        // Fase 3: Regreso a la posición inicial
+        dadoAnimTime += deltaTime;
+        float t = glm::clamp(dadoAnimTime / dadoAnimDuration, 0.0f, 1.0f);
+        dado1PosY = glm::mix(-0.23f, 0.5f, t);
+        dado2PosY = glm::mix(-0.23f, 0.5f, t);
+        dado1RotY = glm::mix(90.0f, 0.0f, t);
+        dado2RotY = glm::mix(180.0f, 0.0f, t);
+
+        if (t >= 1.0f) {
+            // Fin de la animación
+            isAnimatingDados = false;
+            dadosRegresando = false;
+            dadoAnimTime = 0.0f;
+            dado1PosY = 0.5f;
+            dado2PosY = 0.5f;
+            dado1RotY = 0.0f;
+            dado2RotY = 0.0f;
+			currentCameraMode = THIRD_PERSON; // Cambiar a cámara en primera persona
+			characterPosition = positionAux; // Volver a la posición original del personaje
+			characterRotationY = rotationAux; // Volver a la rotación original del personaje
+			firstPress = true;
+			alSourceStop(sourceAttraction);
+			alSourcePlay(sourceGlobal);
+        }
+    }
+}
+
 int main()
 {
 
@@ -1298,7 +1435,7 @@ int main()
     alGenSources(1, &sourceGlobal);
     alSourcei(sourceGlobal, AL_BUFFER, bufferGlobal);
     alSourcei(sourceGlobal, AL_LOOPING, AL_TRUE);
-    alSourcef(sourceGlobal, AL_GAIN, 0.7f);
+    alSourcef(sourceGlobal, AL_GAIN, 0.4f);
     alSourcePlay(sourceGlobal);
 
     drwav_uninit(&wavGlobal);
@@ -1416,6 +1553,18 @@ int main()
 	Golf_M = Model();
 	Golf_M.LoadModel("Models/golf.obj");
 
+	Garfield_M = Model();
+	Garfield_M.LoadModel("Models/garfield.obj");
+
+    Batman_M = Model();
+    Batman_M.LoadModel("Models/Batman.obj");
+
+	Patrick_M = Model();
+	Patrick_M.LoadModel("Models/Patrick.obj");
+
+	CasaCalamardo_M = Model();
+	CasaCalamardo_M.LoadModel("Models/CasaCalamardo.obj");
+
     // Atracciones
 
     RuedaFortuna_M = Model();
@@ -1474,6 +1623,12 @@ int main()
 
     Hacha_M = Model();
 	Hacha_M.LoadModel("Models/Axe.obj");
+
+	PuestoDados_M = Model();
+	PuestoDados_M.LoadModel("Models/Puesto_Dados.obj");
+
+	Dado_M = Model();
+	Dado_M.LoadModel("Models/Dados.obj");
 
     // Puestos de servicio
 
@@ -1623,14 +1778,24 @@ int main()
         1.0f, 0.09f, 0.032f // Atenuación
     );
 
-    pointLights[13] = PointLight(
-        1.0f, 0.0f, 1.0f,  // Color púrpura (RGB)
+    pointLights[IDX_DADOS] = PointLight(
+        1.0f, 0.0f, 0.0f,  // Color púrpura (RGB)
         0.0f, 1.0f,        // Intensidad ambiental y difusa
-        -20.0f, 6.0f, 15.0f, // Posición inicial (coincide con la medusa)
+        10.0f, 6.0f, -15.0f, // Posición inicial (coincide con la medusa)
         1.0f, 0.09f, 0.032f // Atenuación
     );
 
     pointLightCount++;
+
+    // SpotLight disco sobre el carrito de golf (posición inicial, apuntando hacia abajo)
+    spotLights[1] = SpotLight(
+        1.0f, 0.0f, 0.0f,    // Color inicial: rojo
+        0.0f, 1.0f,          // Intensidad ambiental y difusa
+        golfCenter.x, 3.0f, golfCenter.z, // Posición sobre el carrito
+        0.0f, -1.0f, 0.0f,   // Dirección hacia abajo
+        1.0f, 0.09f, 0.032f, // Atenuación
+        20.0f                // Ángulo del haz (edge)
+    );
 
     // se crean mas luces puntuales y spotlight 
 
@@ -1677,9 +1842,11 @@ int main()
         if (nowDay != lastDay) {
             if (nowDay) {
                 skybox = Skybox(dayFaces);
+                isDay = true;
             }
             else {
                 skybox = Skybox(nightFaces);
+                isDay = false;
             }
             lastDay = nowDay;
         }
@@ -1733,7 +1900,7 @@ int main()
             if (mainWindow.getsKeys()[GLFW_KEY_L]) {
                 if (!isAnimatingBowling) { // Solo activar si no está animando
                     isAnimatingBowling = true;
-					discoLightActive[0] = true; // Activar la luz del boliche
+                    discoLightActive[0] = true; // Activar la luz del boliche
                     bowlingState = 0; // Iniciar desde el estado inicial
                 }
             }
@@ -1743,7 +1910,7 @@ int main()
             if (mainWindow.getsKeys()[GLFW_KEY_K]) {
                 if (!isAnimatingCarousel) { // Solo activar si no está animando
                     isAnimatingCarousel = true;
-					discoLightActive[1] = true; // Activar la luz del carrusel
+                    discoLightActive[1] = true; // Activar la luz del carrusel
                     carouselState = 0; // Iniciar desde el estado inicial
                 }
             }
@@ -1762,12 +1929,12 @@ int main()
         }
 
         if (IsNear(characterPosition, glm::vec3(-0.1, 0.0f, 15.13f), proximityThreshold)) {
-            if (mainWindow.getsKeys()[GLFW_KEY_H]) { 
+            if (mainWindow.getsKeys()[GLFW_KEY_H]) {
                 if (!isAnimatingTopo) {
                     isAnimatingTopo = true;
                     topo1State = 0; // Iniciar desde el estado inicial
                     topo2State = 0; // Iniciar desde el estado inicial
-					discoLightActive[3] = true; // Activar la luz del topo
+                    discoLightActive[3] = true; // Activar la luz del topo
                 }
             }
         }
@@ -1777,7 +1944,7 @@ int main()
             if (mainWindow.getsKeys()[GLFW_KEY_G]) { // Presionar 'G' para activar la animación
                 if (!isAnimatingRueda) { // Solo activar si no está animando
                     isAnimatingRueda = true;
-					discoLightActive[2] = true; // Activar la luz de la rueda de la fortuna
+                    discoLightActive[2] = true; // Activar la luz de la rueda de la fortuna
                     ruedaState = 0; // Iniciar desde el estado inicial
                 }
             }
@@ -1798,9 +1965,71 @@ int main()
                 if (!isAxeAnimating) { // Solo iniciar si no está animando
                     isAxeAnimating = true;
                     axeState = 0; // Iniciar desde el estado inicial
-					discoLightActive[6] = true; // Activar la luz del lanzamiento de hacha
+                    discoLightActive[6] = true; // Activar la luz del lanzamiento de hacha
                 }
             }
+        }
+
+        static bool oKeyPressed = false;
+        if (IsNear(characterPosition, glm::vec3(12.0f, 0.0f, -15.0f), proximityThreshold)) {
+            if (mainWindow.getsKeys()[GLFW_KEY_O]) {
+                if (!oKeyPressed && !isAnimatingDados) {
+                    isAnimatingDados = true;
+                    dadoAnimTime = 0.0f;
+                    dadosRegresando = false;
+					discoLightActive[7] = true; // Activar la luz de los dados
+
+                    currentCameraMode = STATIC_CAMERA; // Cambiar a cámara estática
+                    index = 7; // Índice de los dados
+                    camera.setPosition(positionsGames[index]); // Posición de los dados
+                    camera.setYaw(valueYawGames[index]); // Yaw de los dados
+                    camera.setPitch(valuePitchGames[index]); // Pitch de los dados
+                    camera.update(); // Actualizar la cámara
+                    positionAux = characterPosition; // Guardar la posición del personaje
+                    rotationAux = characterRotationY; // Guardar la rotación del personaje
+                    characterPosition = translateWhileAnimationIsActive[index];
+                    characterRotationY = rotateWhileAnimationIsActive[index];
+                    alSourceStop(sourceGlobal);
+                    alSourcePlay(sourceAttraction);
+                }
+                oKeyPressed = true;
+            }
+            else {
+                oKeyPressed = false;
+            }
+        }
+
+        // Alternar la luz disco con la tecla T
+        static bool tKeyPressed = false;
+        if (mainWindow.getsKeys()[GLFW_KEY_T]) {
+            if (!tKeyPressed) {
+                discoSpotlightActive = !discoSpotlightActive;
+                tKeyPressed = true;
+            }
+        }
+        else {
+            tKeyPressed = false;
+        }
+
+        // Actualizar color de la luz disco si está activa
+        if (discoSpotlightActive) {
+            discoSpotlightTimer += deltaTime;
+            float colorChangeInterval = 20.0f; // Cambia de color cada 1 segundo
+            if (discoSpotlightTimer >= colorChangeInterval) {
+                discoSpotlightColorIndex = (discoSpotlightColorIndex + 1) % 3;
+                discoSpotlightTimer = 0.0f;
+            }
+            // Actualizar color y posición de la luz
+            glm::vec3 color = discoSpotlightColors[discoSpotlightColorIndex];
+            float golfPosX = golfCenter.x + golfRadius * cos(golfAngle);
+            float golfPosZ = golfCenter.z + golfRadius * sin(golfAngle);
+            spotLights[1].SetColor(color.r, color.g, color.b);
+            spotLights[1].setPosition(golfPosX, 3.0f, golfPosZ); // Siempre arriba del carrito
+            spotLights[1].SetIntensity(0.0f, 1.0f);              // Intensidad normal
+        }
+        else {
+            // Apagar la luz (intensidad 0)
+            spotLights[1].SetIntensity(0.0f, 0.0f);
         }
 
         static bool iKeyPressed = false; // Para detectar una sola pulsación
@@ -1813,27 +2042,6 @@ int main()
         }
         else {
             iKeyPressed = false; // Reiniciar el estado de la tecla
-        }
-
-        // Incrementar el temporizador
-        dayNightTimer += deltaTime;
-
-        // Alternar entre día y noche cada 60 segundos
-        if (dayNightTimer >= 3600.0f) {
-            dayNightTimer = 0.0f; // Reiniciar el temporizador
-            isDay = !isDay; // Alternar entre día y noche
-
-            // Cambiar las caras del skybox y la luz direccional
-            if (isDay) {
-                skybox = Skybox(dayFaces); // Cambiar a las caras del día
-                mainLight.SetDirection(0.0f, -1.0f, 0.0f); // Luz desde arriba hacia abajo
-                mainLight.SetIntensity(0.3, 0.6); // Luz intensa
-            }
-            else {
-                skybox = Skybox(nightFaces); // Cambiar a las caras de la noche
-                mainLight.SetDirection(0.0f, -1.0f, 0.0f); // Mantener la dirección
-                mainLight.SetIntensity(0.1, 0.3); // Luz tenue
-            }
         }
 
         // Detectar si la bola de boliche alcanza la posición 20.0f en X
@@ -1865,7 +2073,7 @@ int main()
                 pinsReturningToNormal = false; // Finalizar el regreso a 0 grados
             }
         }
-        
+
         // Recibir eventos del usuario
         glfwPollEvents();
         camera.keyControl(mainWindow.getsKeys(), deltaTime);
@@ -1898,6 +2106,7 @@ int main()
 
         // información al shader de fuentes de iluminación
         shaderList[0].SetDirectionalLight(&mainLight);
+        shaderList[0].SetSpotLights(spotLights, 2); // 2 spotlights: linterna y disco
 
         glm::mat4 model(1.0);
         glm::mat4 modelaux(1.0);
@@ -1919,63 +2128,63 @@ int main()
 
         if (currentCameraMode != FIRST_PERSON) {
             // Renderizar el modelo de Rigby excepto en primera persona
-                glm::mat4 model;
+            glm::mat4 model;
 
-                // Renderizar el cuerpo
-                model = glm::mat4(1.0f);
-                model = glm::translate(model, characterPosition + glm::vec3(0.0f, characterVerticalPosition, 0.0f)); // Incluir la posición vertical
-                model = glm::rotate(model, glm::radians(characterRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
-                glUniformMatrix4fv(shaderList[0].GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
-                MaterialAvatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
-                Cuerpo_M.RenderModel();
+            // Renderizar el cuerpo
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, characterPosition + glm::vec3(0.0f, characterVerticalPosition, 0.0f)); // Incluir la posición vertical
+            model = glm::rotate(model, glm::radians(characterRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
+            glUniformMatrix4fv(shaderList[0].GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
+            MaterialAvatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
+            Cuerpo_M.RenderModel();
 
-                // Renderizar el brazo derecho
-                model = glm::mat4(1.0f);
-                model = glm::translate(model, characterPosition + glm::vec3(0.0f, characterVerticalPosition, 0.0f));
-                model = glm::rotate(model, glm::radians(characterRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación general en Y
-                model = glm::rotate(model, glm::radians(brazoD_RotationX), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
-                if (isAnimatingBaseball || isAnimatingTopo || isAnimatingBowling) {
-                    model = glm::rotate(model, glm::radians(handCurrentAngle), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
-                }
-                if (isAnimatingRueda || isAnimatingCarousel) {
-                    model = glm::rotate(model, glm::radians(brazoCurrentAngle), glm::vec3(1.0f, 0.0f, 0.0f)); // Animación en X
-                }
-                glUniformMatrix4fv(shaderList[0].GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
-                MaterialAvatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
-                BrazoD_M.RenderModel();
+            // Renderizar el brazo derecho
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, characterPosition + glm::vec3(0.0f, characterVerticalPosition, 0.0f));
+            model = glm::rotate(model, glm::radians(characterRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación general en Y
+            model = glm::rotate(model, glm::radians(brazoD_RotationX), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
+            if (isAnimatingBaseball || isAnimatingTopo || isAnimatingBowling) {
+                model = glm::rotate(model, glm::radians(handCurrentAngle), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
+            }
+            if (isAnimatingRueda || isAnimatingCarousel) {
+                model = glm::rotate(model, glm::radians(brazoCurrentAngle), glm::vec3(1.0f, 0.0f, 0.0f)); // Animación en X
+            }
+            glUniformMatrix4fv(shaderList[0].GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
+            MaterialAvatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
+            BrazoD_M.RenderModel();
 
-                // Renderizar el brazo izquierdo
-                model = glm::mat4(1.0f);
-                model = glm::translate(model, characterPosition + glm::vec3(0.0f, characterVerticalPosition, 0.0f));
-                model = glm::rotate(model, glm::radians(characterRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación general en Y
-                model = glm::rotate(model, glm::radians(brazoI_RotationX), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
-                if (isAnimatingBaseball || isAnimatingTopo || isAnimatingBowling) {
-                    model = glm::rotate(model, glm::radians(handCurrentAngle), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
-                }
-                if (isAnimatingRueda || isAnimatingCarousel ) {
-                    model = glm::rotate(model, glm::radians(brazoCurrentAngle), glm::vec3(1.0f, 0.0f, 0.0f)); // Animación en X
-                }
-                glUniformMatrix4fv(shaderList[0].GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
-                MaterialAvatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
-                BrazoI_M.RenderModel();
+            // Renderizar el brazo izquierdo
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, characterPosition + glm::vec3(0.0f, characterVerticalPosition, 0.0f));
+            model = glm::rotate(model, glm::radians(characterRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación general en Y
+            model = glm::rotate(model, glm::radians(brazoI_RotationX), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
+            if (isAnimatingBaseball || isAnimatingTopo || isAnimatingBowling) {
+                model = glm::rotate(model, glm::radians(handCurrentAngle), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
+            }
+            if (isAnimatingRueda || isAnimatingCarousel) {
+                model = glm::rotate(model, glm::radians(brazoCurrentAngle), glm::vec3(1.0f, 0.0f, 0.0f)); // Animación en X
+            }
+            glUniformMatrix4fv(shaderList[0].GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
+            MaterialAvatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
+            BrazoI_M.RenderModel();
 
-                // Renderizar el pie derecho
-                model = glm::mat4(1.0f);
-                model = glm::translate(model, characterPosition + glm::vec3(0.0f, characterVerticalPosition, 0.0f));
-                model = glm::rotate(model, glm::radians(characterRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación general en Y
-                model = glm::rotate(model, glm::radians(pieD_RotationX), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
-                glUniformMatrix4fv(shaderList[0].GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
-                MaterialAvatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
-                PieD_M.RenderModel();
+            // Renderizar el pie derecho
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, characterPosition + glm::vec3(0.0f, characterVerticalPosition, 0.0f));
+            model = glm::rotate(model, glm::radians(characterRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación general en Y
+            model = glm::rotate(model, glm::radians(pieD_RotationX), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
+            glUniformMatrix4fv(shaderList[0].GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
+            MaterialAvatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
+            PieD_M.RenderModel();
 
-                // Renderizar el pie izquierdo
-                model = glm::mat4(1.0f);
-                model = glm::translate(model, characterPosition + glm::vec3(0.0f, characterVerticalPosition, 0.0f));
-                model = glm::rotate(model, glm::radians(characterRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación general en Y
-                model = glm::rotate(model, glm::radians(pieI_RotationX), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
-                glUniformMatrix4fv(shaderList[0].GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
-                MaterialAvatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
-                PieI_M.RenderModel();
+            // Renderizar el pie izquierdo
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, characterPosition + glm::vec3(0.0f, characterVerticalPosition, 0.0f));
+            model = glm::rotate(model, glm::radians(characterRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación general en Y
+            model = glm::rotate(model, glm::radians(pieI_RotationX), glm::vec3(0.0f, 0.0f, 1.0f)); // Animación en Z
+            glUniformMatrix4fv(shaderList[0].GetModelLocation(), 1, GL_FALSE, glm::value_ptr(model));
+            MaterialAvatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
+            PieI_M.RenderModel();
         }
 
         /*---------------------LLAMADA A FUNCIONES----------------------*/
@@ -1992,16 +2201,17 @@ int main()
         UpdateBrazoAnimation(deltaTime);
         UpdateJumpAnimation(deltaTime);
         UpdateHandAnimation(deltaTime);
-		UpdateDartAndBalloonsAnimation(deltaTime, characterPosition);
+        UpdateDartAndBalloonsAnimation(deltaTime, characterPosition);
         UpdateAxeAnimation(deltaTime, characterPosition);
         UpdateGolfAnimation(deltaTime);
+        UpdateDadosAnimation(deltaTime, characterPosition);
 
         /*----------------RENDERIZADO DE LUCES DE JUEGOS MECANICOS--------------------*/
 
         unsigned int totalLights = 0; // Contador de luces activas
 
 
-        for (int i = 0; i < 7; ++i) {
+        for (int i = 0; i < 8; ++i) {
             if (discoLightActive[i]) {
                 totalLights = std::max(totalLights, (unsigned int)(IDX_BOLICHE + i + 1));
             }
@@ -2038,7 +2248,7 @@ int main()
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(30.0f, 6.0f, 10.0f)); // Posición de la rueda
         model = glm::rotate(model, glm::radians(ruedaRotationX), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotación en el eje X
-		MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         RuedaFortuna_M.RenderModel();
 
@@ -2106,7 +2316,7 @@ int main()
         Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Medusa_M.RenderModel();
-        
+
         model = glm::mat4(1.0);
         model = glm::translate(model, glm::vec3(-12.0f, 0.1f + sin(glm::radians(angulovaria)), -1.5f + medusaPositionZ));
         model = glm::rotate(model, glm::radians(medusaRotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación en el eje Y
@@ -2129,6 +2339,33 @@ int main()
         model = glm::rotate(model, glm::radians(golfRotation), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación sobre su eje
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Golf_M.RenderModel();
+
+        float garfieldJumpHeight = garfieldJumAnim.getHeight(deltaTime);
+        float batmanJumHeight = batmanJumAnim.getHeight(deltaTime);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(12.0f, -0.5f + garfieldJumpHeight, 15.0));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        Garfield_M.RenderModel();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(15.0f, -0.5f + batmanJumHeight, -4.0));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        Batman_M.RenderModel();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(4.0f, -0.5f, -5.0f));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        Patrick_M.RenderModel();
+
+        model = glm::mat4(1.0);
+        model = glm::translate(model, glm::vec3(30.0f, -2.0f, -15.0));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        CasaCalamardo_M.RenderModel();
 
         /*------------------ Puestos comida -------------------------*/
 
@@ -2441,6 +2678,38 @@ int main()
         MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         Pine_M.RenderModel();
+
+        /*----------------Puesto de dados----------------------*/
+
+        // Puesto completo
+
+        model = glm::mat4(1.0);
+        model = glm::translate(model, glm::vec3(10.0f, -0.5f, -15.0f)); // Posición del bat
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        PuestoDados_M.RenderModel();
+
+        // Dados animados
+        model = glm::mat4(1.0);
+        model = glm::translate(model, glm::vec3(10.3f, dado1PosY, -15.2f));
+        model = glm::rotate(model, glm::radians(dado1RotY), glm::vec3(0.0f, 0.0f, 1.0f));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        Dado_M.RenderModel();
+
+        model = glm::mat4(1.0);
+        model = glm::translate(model, glm::vec3(10.3f, dado2PosY, -15.1f));
+        model = glm::rotate(model, glm::radians(dado2RotY), glm::vec3(0.0f, 0.0f, 1.0f));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        Dado_M.RenderModel();
+
+        // Moneda de interaccion
+        model = glm::mat4(1.0);
+        model = glm::translate(model, glm::vec3(12.0f, 0.3f + sin(glm::radians(angulovaria)), -15.0f));
+        MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        Coin_M.RenderModel();
 
         glUseProgram(0);
 

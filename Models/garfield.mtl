@@ -1,29 +1,22 @@
-# Material file for garfield.obj
+# Blender 4.3.2 MTL File: 'None'
+# www.blender.org
 
-newmtl eye
-	Ns 0
-	d 1
-	illum 2
-	Kd 0.8 0.8 0.8
-	Ks 0.0 0.0 0.0
-	Ka 0.2 0.2 0.2
-	map_Kd 4b6048ec.png
+newmtl Garfield_Costume00_Body_Mat.001
+Ns 200.000381
+Ka 1.000000 1.000000 1.000000
+Ks 0.200000 0.200000 0.200000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Garfield_BaseColor(1).png
 
-newmtl head
-	Ns 0
-	d 1
-	illum 2
-	Kd 0.8 0.8 0.8
-	Ks 0.0 0.0 0.0
-	Ka 0.2 0.2 0.2
-	map_Kd 341d14b3.png
-
-newmtl torso
-	Ns 0
-	d 1
-	illum 2
-	Kd 0.8 0.8 0.8
-	Ks 0.0 0.0 0.0
-	Ka 0.2 0.2 0.2
-	map_Kd 78451624.png
-
+newmtl Garfield_Costume00_Expressions_Mat.001
+Ns 200.000381
+Ka 1.000000 1.000000 1.000000
+Ks 0.200000 0.200000 0.200000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Garfield_Expressions_BaseColor.png

@@ -5,13 +5,9 @@ C:\Users\ciber\Documents\ProyectoFinal\Window.h(12,36): warning C4244: 'return':
 C:\Users\ciber\Documents\ProyectoFinal\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
   (compilando archivo de origen "main.cpp")
   
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1288,27): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1309,31): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1330,27): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1643,21): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1645,39): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1826,45): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1826,40): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1831,45): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1831,40): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1429,27): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1450,31): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1471,27): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1812,21): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1814,39): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
   Practica7.vcxproj -> C:\Users\ciber\Documents\ProyectoFinal\Debug\Practica7.exe

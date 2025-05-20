@@ -9,7 +9,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd M_05_Circus_Carousel_02_baseColor.jpg
+map_Kd imagetmp.tga
 map_Bump M_05_Circus_Carousel_02_normal.jpg
 
 newmtl mat3
@@ -20,7 +20,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd M_05_Circus_Carousel_03_baseColor.jpg
+map_Kd imagetmp.tga
 map_Bump M_05_Circus_Carousel_03_normal.jpg
 
 newmtl mat4
@@ -41,4 +41,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd M_05_Circus_Carousel_01_baseColor.jpg
+map_Kd imagetmp.tga

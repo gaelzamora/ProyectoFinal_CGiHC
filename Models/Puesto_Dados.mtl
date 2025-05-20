@@ -1,0 +1,133 @@
+# Blender 4.3.2 MTL File: 'None'
+# www.blender.org
+
+newmtl 00_erged
+Ns 200.000381
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd 00_BaseColor_Merged.jpg
+
+newmtl Brushed_Metal
+Ns 500.000305
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd pokertable_round_Brushed_Metal_BaseColor.png
+
+newmtl DS_Hotdog_Seller.004
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd Bake_Worker3.png
+
+newmtl Fabric
+Ns 500.000305
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd pokertable_round_Fabric_BaseColor.png
+
+newmtl Leather
+Ns 500.000305
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd pokertable_round_Leather_BaseColor.png
+
+newmtl Material.001
+Ns 17.375984
+Ka 1.000000 1.000000 1.000000
+Ks 0.050000 0.050000 0.050000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd EXTRAHUEVOORDINAROOOOOOOO.png
+map_d EXTRAHUEVOORDINAROOOOOOOO.png
+
+newmtl Material.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Guante.png
+
+newmtl Metal
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd -s 4 4 4 Metal027_4K_Color.jpg
+map_Ns -s 4 4 4 Metal027_4K_Roughness.jpg
+map_refl -s 4 4 4 Metal027_4K_Metalness.jpg
+
+newmtl Wood
+Ns 500.000305
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd pokertable_round_Wood_BaseColor.png
+
+newmtl Wood_III
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Wood_III_Color.png
+map_Ns Metal027_4K_Roughness.jpg
+
+newmtl batman_logo
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd batman logo.png
+map_d batman logo.png
+
+newmtl body_
+Ns 200.000381
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd body_BaseColor.jpg
+
+newmtl set1
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd Display_Tent_M_Tent_BaseColor.png
