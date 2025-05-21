@@ -5,9 +5,10 @@ C:\Users\ciber\Documents\ProyectoFinal\Window.h(12,36): warning C4244: 'return':
 C:\Users\ciber\Documents\ProyectoFinal\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
   (compilando archivo de origen "main.cpp")
   
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1429,27): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1450,31): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1471,27): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1812,21): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1814,39): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1426,27): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1447,31): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1468,27): warning C4244: 'inicializando': conversión de 'drwav_uint64' a 'size_t'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1809,21): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1811,39): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
   Practica7.vcxproj -> C:\Users\ciber\Documents\ProyectoFinal\Debug\Practica7.exe

@@ -1,19 +1,21 @@
-﻿  main.cpp
-C:\Users\ciber\Documents\ProyectoFinal\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
-  (compilando archivo de origen "main.cpp")
-  
-C:\Users\ciber\Documents\ProyectoFinal\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
-  (compilando archivo de origen "main.cpp")
-  
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1360,21): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1362,39): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1481,45): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1481,40): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1486,45): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-C:\Users\ciber\Documents\ProyectoFinal\main.cpp(1486,40): warning C4305: 'argumento': truncamiento de 'double' a 'GLfloat'
-  Generando código
-  4 of 996 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+﻿  Generando código
+  0 of 1215 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    32 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Generación de código finalizada
-  Practica7.vcxproj -> C:\Users\ciber\Documents\ProyectoFinal\Release\Practica7.exe
+OpenAL32.lib(OpenAL32_lib_s00015.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00006.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00012.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00089.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00033.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00123.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00124.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00093.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00073.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00098.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00112.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00030.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00083.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00103.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+OpenAL32.lib(OpenAL32_lib_s00101.o) : error LNK2026: módulo no seguro de una imagen SAFESEH.
+C:\Users\ciber\Documents\ProyectoFinal\Release\Practica7.exe : fatal error LNK1281: No se puede generar la imagen SAFESEH.

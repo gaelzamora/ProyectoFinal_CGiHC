@@ -193,6 +193,7 @@ float sunMoonAngle = 0.0f; // Ángulo actual del ciclo (en radianes)
 float sunMoonSpeed = glm::radians(10.0f) / 360.0f; // Velocidad del ciclo (ajusta a tu gusto)
 glm::vec3 sunCenter = glm::vec3(0.0f, 20.0f, 0.0f); // Centro de la trayectoria
 float sunRadius = 70.0f; // Radio de la trayectoria
+bool isDay = true; // Estado inicial: día
 
 // Índices para las luces de las atracciones en el arreglo pointLights
 const int IDX_BOLICHE = 6;
@@ -412,9 +413,6 @@ static const char* vShader = "shaders/shader_light.vert";
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
 
-
-// KEYFRAMES 
-
 float dayLightIntensity = 0.6f; // Intensidad de la luz durante el día
 float nightLightIntensity = 0.3f; // Intensidad de la luz durante la noche
 
@@ -448,7 +446,6 @@ int ruedaState = 0;            // Estado actual de la animación (0: inicial, 1:
 float ruedaRotationX = 0.0f;   // Ángulo de rotación actual de la rueda en el eje X
 float ruedaSpeed = 0.5f;
 
-bool isDay = true; // Estado inicial: día
 bool tKeyPressed = false;
 
 bool isAnimationActive = false;
@@ -2032,18 +2029,6 @@ int main()
             spotLights[1].SetIntensity(0.0f, 0.0f);
         }
 
-        static bool iKeyPressed = false; // Para detectar una sola pulsación
-
-        if (mainWindow.getsKeys()[GLFW_KEY_I]) {
-            if (!iKeyPressed) { // Solo ejecutar una vez por pulsación
-                iKeyPressed = true;
-                isGolfLightActive = !isGolfLightActive; // Alternar el estado de la luz
-            }
-        }
-        else {
-            iKeyPressed = false; // Reiniciar el estado de la tecla
-        }
-
         // Detectar si la bola de boliche alcanza la posición 20.0f en X
         if (bowlingPositionX >= -0.1f && !pinsKnockedOver) {
             pinsKnockedOver = true; // Marcar los pinos como derribados
@@ -2362,7 +2347,7 @@ int main()
         Patrick_M.RenderModel();
 
         model = glm::mat4(1.0);
-        model = glm::translate(model, glm::vec3(30.0f, -2.0f, -15.0));
+        model = glm::translate(model, glm::vec3(30.0f, -1.5f, -15.0));
         MaterialAtraccion.UseMaterial(uniformSpecularIntensity, uniformShininess);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
         CasaCalamardo_M.RenderModel();
